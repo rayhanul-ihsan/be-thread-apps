@@ -1,1 +1,1 @@
-export default new class UserServices
+// export default new class UserServices

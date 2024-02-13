@@ -19,4 +19,5 @@ export default new class AuthMiddlewares {
         }
 
     }
+    
 }
