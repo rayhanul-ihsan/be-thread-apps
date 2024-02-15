@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { Like } from "./Like"
+import { Reply } from "./Reply"
 
-@Entity({name :'user'})
+@Entity({name :'users'})
 export class User {
 
     @PrimaryGeneratedColumn()
@@ -26,4 +28,10 @@ export class User {
 
     @Column({nullable: true})
     bio: string
+
+    @OneToMany(() => Like, (like) => like.author)
+    likes: Like[]
+
+    @OneToMany(() => Reply, (reply) => reply.author)
+    replies: Reply[]
 }

@@ -1,6 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany} from "typeorm"
+import { User } from "./User"
+import { Like } from "./Like"
+import { Reply } from "./Reply"
 
-@Entity({name :'user'})
+@Entity({name :'threads'})
 export class Thread {
 
     @PrimaryGeneratedColumn()
@@ -12,16 +15,18 @@ export class Thread {
     @Column()
     content: string
 
-    @CreateDateColumn({
-        type: "timestamp",
-        default: () => "CURENT_TIMESTAMP"
-    })
-    
-    
-    @UpdateDateColumn({
-        type: "timestamp",
-        default: () => "CURENT_TIMESTAMP",
-        
+    @OneToMany(()=>Like, (like) => like.thread)
+    likes: Like[]
 
-    })
+    @Column(() => Reply, (reply) => reply.replay)
+    replies: Reply[]
+
+    @ManyToOne(()=>User,user=>user.id)
+    author: User
+
+    @Column({default: ()=> 'NOW{}'})
+    createdAt: Date
+
+    @Column()
+    updateAt: Date
 }
