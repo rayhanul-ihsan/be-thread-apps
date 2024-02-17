@@ -3,6 +3,7 @@ import { User } from "../entity/User"
 import { Repository } from "typeorm"
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
+import { Request, Response } from "express"
 
 
 export default new class AuthService {
@@ -35,8 +36,8 @@ export default new class AuthService {
 
             if(!checkUserName)return `username: ${reqbody.user_name} has not found`
 
-            const checkPass = await bcrypt.compare(reqbody.password, checkUserName.password)
-            if(!checkPass) return `password salah` 
+            const isCheckPass = await bcrypt.compare(reqbody.password, checkUserName.password)
+            if(!isCheckPass) return `password salah` 
 
             const obj = this.AuthRepository.create({
                 id: checkUserName.id,
@@ -46,11 +47,23 @@ export default new class AuthService {
             })
             const token =jwt.sign({obj}, 'apaajah', {expiresIn: '24h'} )
             return {
-                message:'login SUCCSESS',
+                message:'Login SUCCSESS',
                 token
         }
         } catch (error) {
             throw error
+        }
+    }
+
+    async loginCheck (req: Request, res: Response): Promise<Response | string> {
+        try {
+            const loginSession = res.locals.loginSession
+            const user = await this.AuthRepository.findOne({
+                where:
+                {id:loginSession.obj.id}
+            })
+        } catch (error) {
+            return res.status(500).json(error)
         }
     }
 }

@@ -9,24 +9,24 @@ export class Thread {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({nullable: true})
     image: string
 
-    @Column()
+    @Column({nullable: true})
     content: string
 
     @OneToMany(()=>Like, (like) => like.thread)
     likes: Like[]
 
-    @Column(() => Reply, (reply) => reply.replay)
+    @OneToMany(() => Reply, (reply) => reply.replay)
     replies: Reply[]
 
     @ManyToOne(()=>User,user=>user.id)
     author: User
 
-    @Column({default: ()=> 'NOW{}'})
+    @Column({default: ()=> 'NOW()'})
     createdAt: Date
 
-    @Column()
+    @Column({nullable: true})
     updateAt: Date
 }

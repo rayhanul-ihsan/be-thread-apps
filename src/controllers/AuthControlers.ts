@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerSchema, loginSchema  } from "../utils/validator/AuthValidator";
+import loginSchema, { registerSchema  } from "../utils/validator/AuthValidator";
 import AuthServices from "../services/AuthServices";
 
 export default new class AuthControllers {
@@ -27,5 +27,9 @@ export default new class AuthControllers {
         } catch (error) {
             return res.status(500).json(error)
         }
+    }
+
+    check(req: Request, res: Response){
+        AuthServices.loginCheck(req,res)
     }
 }

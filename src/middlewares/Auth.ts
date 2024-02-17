@@ -9,15 +9,13 @@ export default new class AuthMiddlewares {
             return res.status(401).json({message: "unauthrize"});
         }
 
-        const token = authHeader.split("")[1];
+        const token = authHeader.split(" ")[1];
         try{
             const loginSession =jwt.verify(token,'apaajah');
             res.locals.loginSession =loginSession
             next()
         } catch(error){
             return res.status(401).json({message: "token not valid"});
-        }
-
-    }
-    
-}
+        };
+    };
+};
