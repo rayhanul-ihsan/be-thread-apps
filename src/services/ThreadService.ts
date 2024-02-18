@@ -68,7 +68,6 @@ export default new (class ThreadService{
             },
         })
     }
-
     async createThread(data) {
         const isValid = validate(createThreadSchema, data)
         let valid
