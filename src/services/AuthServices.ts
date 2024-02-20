@@ -45,7 +45,7 @@ export default new class AuthService {
                 full_name: checkUserName.full_name,
                 email: checkUserName.email
             })
-            const token =jwt.sign({obj}, 'apaajah', {expiresIn: '24h'} )
+            const token =jwt.sign({obj}, "apaajah", {expiresIn: '24h'} )
             return {
                 message:'Login SUCCSESS',
                 token

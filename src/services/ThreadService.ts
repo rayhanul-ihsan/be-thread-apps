@@ -71,14 +71,15 @@ export default new (class ThreadService{
     async createThread(data) {
         const isValid = validate(createThreadSchema, data)
         let valid
-
+        
+        console.log(data)
         if (data.image && data.content) {
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
 
             valid = {
                 content: isValid.content,
-                image: uploadFile.image,
+                image: uploadFile.secure_url,
                 author: isValid.author
             }
         } else if (!data.image && data.content) {
@@ -96,6 +97,7 @@ export default new (class ThreadService{
         } else {
             throw new CostumeError(400, "content or image is required")
         }
+        console.log('va',valid);
         
         await this.threadRepository.save(valid)
         return{
@@ -104,7 +106,16 @@ export default new (class ThreadService{
         }
     }
     
-    async updateThread(id, data) {
+    async updateThread(id, data, session) {
+        const checkThread = await this.threadRepository.findOne({ 
+            where: id,
+            relations:{
+                author: true
+            }
+        })
+        if(checkThread.author.id !== session.id) {
+            throw new CostumeError(403, "forbidden")
+        }
         const isValid = validate(updateThreadSchema, data)
         let valid
         
