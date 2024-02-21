@@ -9,7 +9,7 @@ export const createThreadSchema = Joi.object({
 const updateThreadSchema = Joi.object({
     content: Joi.string().max(225),
     image: Joi.string(),
-    updateAt: Joi.date().default(new Date())
+    // updateAt: Joi.date().default(new Date())
 })
 
 export default updateThreadSchema

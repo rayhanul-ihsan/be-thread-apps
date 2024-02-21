@@ -12,7 +12,7 @@ export default new class CloudinaryConfig{
         
         async destination(image: string){
             try {
-                return await cloudinary.uploader.upload(`src/upload/${image}`)
+                return await cloudinary.uploader.upload(`src/upload/${image}`, {folder: 'Toa-app'})
             } catch (error) {
                 throw error
             }

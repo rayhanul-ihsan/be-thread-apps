@@ -13,6 +13,7 @@ router.get("/auth/check",AuthMiddlewares.Auth, AuthControlers.check)
 
 router.get("/thread", threadController.getThreads)
 router.post("/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.createThread)
+router.put("/thread/:id",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.updateThread)
 
 
 

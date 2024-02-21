@@ -4,11 +4,12 @@ import { AppDataSource } from "../data-source"
 import updateThreadSchema, { createThreadSchema } from "../utils/validator/CreatThreadValidator"
 import { validate } from "../utils/validator/validation"
 import cloudinary from "../libs/cloudinary"
-import { response } from "express"
+import { Request, Response, response } from "express"
 import CostumeError from "../error/CostumeError"
 
 export default new (class ThreadService{
     private readonly threadRepository: Repository<Thread> = AppDataSource.getRepository(Thread)
+
 
     async getThreads() {
         return this.threadRepository.find({
@@ -105,51 +106,104 @@ export default new (class ThreadService{
             data: valid
         }
     }
-    
-    async updateThread(id, data, session) {
-        const checkThread = await this.threadRepository.findOne({ 
-            where: id,
-            relations:{
-                author: true
-            }
-        })
-        if(checkThread.author.id !== session.id) {
-            throw new CostumeError(403, "forbidden")
-        }
-        const isValid = validate(updateThreadSchema, data)
-        let valid
-        
-        if (data.image && data.content) {
-            cloudinary.upload()
-            const uploadFile = await cloudinary.destination(isValid.image)
-    
-            valid = {
-                content: isValid.content,
-                image: uploadFile.image,
-                updatedAt: isValid.updatedAt
-            }
-        } else if (!data.image && data.content) {
-            valid = {
-                content: isValid.content,
-                updatedAt: isValid.updatedAt
-            }
-        } else if ( data.image && !data.content) {
-            cloudinary.upload()
-            const uploadFile = await cloudinary.destination(isValid.image)
-            valid = {
-                image: uploadFile.secure_url,
-                updatedAt: isValid.updatedAt
-            }
-        } else {
-            throw new CostumeError(400, "content or image is required")
-        }
+    async update(req: Request, res :Response): Promise<Response>{
+        try {
+            // mengambil id dari req params lalu diubah tipe datanya jadi integer
+            const id = parseInt(req.params.id, 10)
 
-        await this.threadRepository.update(id, valid)
-        return {
-            message: "Thread update",
-            data: valid
+            //setelah mendapatkan id lalu akan 
+            //melakukan pencarian data dengan findOne sesuai id nya
+            const obj = await this.threadRepository.findOne({
+                where:{
+                    id
+                }
+            })
+
+            //melakukan pencarian data brdasarkan id tadi,jika tidak ada makan akan dihanddle dalam error
+            if(!obj)
+            return res.status(404).json({
+                message: `Thread ID not found`
+            })
+
+            //mendapatkan data dari inputannya
+            const data ={
+                content: req.body.content, 
+                image:req.file.filename
+            }
+            //melakukan pengecekan menggunakan validator
+            const {error,value} = updateThreadSchema.validate(data)
+            if (error) return res.status(400).json(error.details[0].message)
+
+            cloudinary.upload()
+            const uploadFile = await cloudinary.destination(value.image)
+            // if (data) {
+            //     obj.content= value.content
+            //     obj.image_thread= value.image_thread
+            // }
+            if (data.content){
+                obj.content= value.content
+            }
+            if (data.image){
+                obj.image= uploadFile.secure_url
+            }
+
+            const thread = await  this.threadRepository.save(obj)
+            return res.status(200).json(thread)
+
+        } catch (error) {
+            return res.status(500).json(error)
         }
     }
+
+
+    //fahmi punya
+    // async updateThread(id, data, session) {
+    //     console.log("data service",data)
+    //     const checkThread = await this.threadRepository.findOne({ 
+    //         where: id,
+    //         relations:{
+    //             author: true
+    //         }
+    //     })
+    //     console.log("ini check thread",checkThread)
+    //     if(checkThread.author.id !== session.id) {
+    //         throw new CostumeError(403, "forbidden")
+    //     }
+    //     const isValid = validate(updateThreadSchema, data)
+    //     console.log("ini isvalid",isValid)
+    //     let valid
+        
+    //     if (data.image && data.content) {
+    //         cloudinary.upload()
+    //         const uploadFile = await cloudinary.destination(isValid.image)
+    
+    //         valid = {
+    //             content: isValid.content,
+    //             image: uploadFile.secure_url,
+    //             updatedAt: isValid.updatedAt
+    //         }
+    //     } else if (!data.image && data.content) {
+    //         valid = {
+    //             content: isValid.content,
+    //             updatedAt: isValid.updatedAt
+    //         }
+    //     } else if ( data.image && !data.content) {
+    //         cloudinary.upload()
+    //         const uploadFile = await cloudinary.destination(isValid.image)
+    //         valid = {
+    //             image: uploadFile.secure_url,
+    //             updatedAt: isValid.updatedAt
+    //         }
+    //     } else {
+    //         throw new CostumeError(400, "content or image is required")
+    //     }
+
+    //     await this.threadRepository.update(id, valid)
+    //     return {
+    //         message: "Thread update",
+    //         data: valid
+    //     }
+    // }
 
     async deleteThread(id, session) {
         const checkThread = await this.threadRepository.findOne({ where: {id}})

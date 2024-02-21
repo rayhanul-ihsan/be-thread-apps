@@ -33,6 +33,7 @@ export default new (class threadController{
                 data = {
                     content: req.body.content,
                     author: res.locals.loginSession.id,
+
                 };
             } else {
                 data = {
@@ -51,26 +52,32 @@ export default new (class threadController{
         }
     }
 
-    async updateThread(req: Request, res: Response){
-        try {
-            let data
-    
-            if(!req.file) {
-                data = {
-                    content: req.body.content
-                }
-            }else {
-                data = {
-                    content: req.body.content,
-                    image: req.file.filename
-                }                
-            }
-            const response = await ThreadService.updateThread(req.params, data, res.locals.loginSession.id)
-            res.status(200).json(response)
-        } catch (error) {
-            res.status(error.status).json({message: error.message})
+    // async updateThread(req: Request, res: Response){
+    //     try {
+    //         let data
+    //         console.log(data)
+    //         if(!req.file) {
+    //             data = {
+    //                 content: req.body.content
+    //             }
+    //             console.log("tanpa file",data)
+    //         }else {
+    //             data = {
+    //                 content: req.body.content,
+    //                 image: req.file.filename
+    //             }                
+    //         }
+    //         console.log("dengan file",data)
+    //         const response = await ThreadService.updateThread(req.params, data, res.locals.loginSession.id)
+    //         console.log("response",response)
+    //         res.status(200).json(response)
+    //     } catch (error) {
+    //         res.status(error.status).json({message: error.message})
             
-        }
+    //     }
+    // }
+    async updateThread(req: Request, res: Response){
+        ThreadService.update(req,res)
     }
     async deleteThread(req: Request, res: Response){
         try {

@@ -4,7 +4,7 @@ import * as jwt from 'jsonwebtoken'
 export default new class AuthMiddlewares {
     Auth(req: Request, res: Response, next: NextFunction) :Response{
         const authHeader = req.headers.authorization
-        console.log(authHeader);
+        // console.log(authHeader);
         
 
         if (!authHeader || !authHeader.startsWith('Bearer')) {
@@ -12,7 +12,7 @@ export default new class AuthMiddlewares {
         }
 
         const token = authHeader.split(" ")[1];
-        console.log(token);
+        // console.log(token);
         
         try{
             const loginSession =jwt.verify(token, "apaajah");
