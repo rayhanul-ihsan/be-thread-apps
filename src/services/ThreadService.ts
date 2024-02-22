@@ -205,16 +205,33 @@ export default new (class ThreadService{
     //     }
     // }
 
-    async deleteThread(id, session) {
-        const checkThread = await this.threadRepository.findOne({ where: {id}})
-        if (!checkThread) throw new CostumeError(404, "Not Found!")
 
-        if (session !== checkThread.author.id) throw new CostumeError(403, "Cannot delete another users Thread")
+    async delete(req: Request, res: Response): Promise<Response>{
+        try {
+            // mengambil id dari req params lalu diubah tipe datanya jadi integer
+            const id = parseInt(req.params.id, 10)
+            //setelah mendapatkan id lalu akan melakukan pencarian data dengan findOne sesuai id nya
+            const obj = await this.threadRepository.findOne({where : {id}}) 
+             //melakukan pencarian data brdasarkan id tadi,jika tidak ada makan akan dihanddle dalam error
+            if(!obj) return res.json({message :  "Thread Id not found"})
 
-        await this.threadRepository.delete(id)
-        return {
-            message: "Thread deleted"
+            //se
+            const thread = await this.threadRepository.delete(id)
+            return res.status(200).json({messagae : "Succses Delete Thread", thread})
+        } catch (error) {
+            return res.status(500).json(error)
         }
     }
+    // async deleteThread(id, loginSession) {
+    //     const checkThread = await this.threadRepository.findOne({ where: {id}})
+    //     if (!checkThread) throw new CostumeError(404, "Not Found!")
+
+    //     if (loginSession !== checkThread.author.id) throw new CostumeError(403, "Cannot delete another users Thread")
+
+    //     await this.threadRepository.delete(id)
+    //     return {
+    //         message: "Thread deleted"
+    //     }
+    // }
 
 })

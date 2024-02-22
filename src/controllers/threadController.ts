@@ -79,13 +79,17 @@ export default new (class threadController{
     async updateThread(req: Request, res: Response){
         ThreadService.update(req,res)
     }
+
     async deleteThread(req: Request, res: Response){
-        try {
-            const response = await ThreadService.deleteThread(req.params, res.locals.loginSession.id)
-            res.status(200).json(response)
-        } catch (error) {
-            res.status(error.status).json({message: error.message})
-            
-        }
+        ThreadService.delete(req,res)
     }
+    // async deleteThread(req: Request, res: Response){
+    //     try {
+    //         const response = await ThreadService.deleteThread(req.params, res.locals.loginSession.id)
+    //         res.status(200).json(response)
+    //     } catch (error) {
+    //         res.status(error.status).json({message: error.message})
+            
+    //     }
+    // }
 })
