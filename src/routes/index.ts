@@ -21,7 +21,7 @@ router.delete("/thread/:id",AuthMiddlewares.Auth, threadController.deleteThread)
 // Users
 router.get("/users", UserController.all)
 router.post("/user/:id", UserController.findOne)
-router.put("/user/:id", UserController.findOne)
+router.put("/user/:id", UserController.update)
 
 
 

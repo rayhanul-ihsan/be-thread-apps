@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import { Like } from "./Like"
 import { Reply } from "./Reply"
+
 
 @Entity({name :'users'})
 export class User {
@@ -28,6 +29,9 @@ export class User {
 
     @Column({nullable: true})
     bio: string
+
+    // @OneToMany(() => Follow, (Follow) => Follow.followers)
+    // followers: Follow[]
 
     @OneToMany(() => Like, (like) => like.author)
     likes: Like[]

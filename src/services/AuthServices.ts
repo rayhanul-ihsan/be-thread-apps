@@ -19,6 +19,9 @@ export default new class AuthService {
                 user_name: reqbody.user_name,
                 full_name: reqbody.full_name,
                 email: reqbody.email,
+                bio: reqbody.bio,
+                profile_picture: reqbody.profile_picture,
+                image_cover: reqbody.image_cover,
                 password: hashPassword
             })
             const resRgis = await this.AuthRepository.save(obj)
@@ -43,12 +46,16 @@ export default new class AuthService {
                 id: checkUserName.id,
                 user_name: checkUserName.user_name,
                 full_name: checkUserName.full_name,
-                email: checkUserName.email
+                email: checkUserName.email,
+                bio: checkUserName.bio,
+                profile_picture: checkUserName.profile_picture,
+                image_cover: checkUserName.image_cover
             })
             const token =jwt.sign({obj}, "apaajah", {expiresIn: '24h'} )
             return {
                 message:'Login SUCCSESS',
-                token
+                token,
+                data: obj
         }
         } catch (error) {
             throw error

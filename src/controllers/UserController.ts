@@ -8,6 +8,10 @@ export default new class UserControllers {
     findOne(req: Request,res: Response){
         UserServices.findOne(req, res)
     }
+
+    update(req: Request,res: Response){
+        UserServices.update(req, res)
+    }
     delete(req: Request,res: Response){
         UserServices.delete(req, res)
     }

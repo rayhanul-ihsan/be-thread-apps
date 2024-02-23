@@ -108,18 +108,14 @@ export default new (class ThreadService{
     }
     async update(req: Request, res :Response): Promise<Response>{
         try {
-            // mengambil id dari req params lalu diubah tipe datanya jadi integer
             const id = parseInt(req.params.id, 10)
 
-            //setelah mendapatkan id lalu akan 
-            //melakukan pencarian data dengan findOne sesuai id nya
             const obj = await this.threadRepository.findOne({
                 where:{
                     id
                 }
             })
 
-            //melakukan pencarian data brdasarkan id tadi,jika tidak ada makan akan dihanddle dalam error
             if(!obj)
             return res.status(404).json({
                 message: `Thread ID not found`
