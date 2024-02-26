@@ -8,7 +8,7 @@ export default new class AuthMiddlewares {
         
 
         if (!authHeader || !authHeader.startsWith('Bearer')) {
-            return res.status(401).json({message: "unauthrize"});
+            return res.status(401).json({message: "Login dulu Tolol!!"});
         }
 
         const token = authHeader.split(" ")[1];

@@ -6,7 +6,7 @@ import { Reply } from "./Reply";
 @Entity({name: 'likes'})
 export class Like {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number 
 
     @ManyToOne(() =>Thread, (thread) => thread.likes, {
         onUpdate: 'CASCADE',

@@ -6,13 +6,18 @@ import { validate } from "../utils/validator/validation"
 import cloudinary from "../libs/cloudinary"
 import { Request, Response, response } from "express"
 import CostumeError from "../error/CostumeError"
+import LikeService from "./LikeService"
+import ReplyService from "./ReplyService"
 
 export default new (class ThreadService{
     private readonly threadRepository: Repository<Thread> = AppDataSource.getRepository(Thread)
 
 
-    async getThreads() {
-        return this.threadRepository.find({
+    async getThreads(id) {
+        const response = await this.threadRepository.find({
+            order: {
+                id: "DESC"
+            },
             relations:{
                 author: true,
                 likes: true,
@@ -24,17 +29,30 @@ export default new (class ThreadService{
                     user_name: true,
                     profile_picture: true
                 },
-                likes: {
-                    id: true
-                },
-                replies: {
-                    id: true
-                },
             },
         })
+        const likes = response.map(async (value) => await LikeService.getLikeThread(value.id, id))
+
+        const threads = []
+        let i = 0
+        const len = response.length
+        for (i = 0; i < len; i++) {
+            threads.push({
+                id: response[i].id,
+                content: response[i].content,
+                image: response[i].image,
+                likes: response[i].likes.length,
+                isliked: await likes[i],
+                replies: response[i].replies.length,
+                author: response[i].author,
+                createdAt: response[i].createdAt
+            })
+        }
+        return await Promise.all(threads)
     }
-    async getThread(id) {
-        return this.threadRepository.findOne({
+    async getThread(id, userId) {
+       const response = await this.threadRepository.findOne({
+            where: id,
             relations:{
                 author: true,
                 likes: true,
@@ -42,32 +60,26 @@ export default new (class ThreadService{
             },
             select:{
                 author: {
+                    id: true,
                     full_name: true,
                     user_name: true,
                     profile_picture: true
-                },
-                likes: {
-                    id: true
-                },
-                replies: {
-                    id: true,
-                    content: true,
-                    image: true,
-                    likes: {
-                        id: true,
-                    },
-                    replies: {
-                        id: true,
-                    },
-                    author: {
-                        full_name: true,
-                        user_name: true,
-                        profile_picture: true,
-                    },
-                    created_at: true,
-                },
+                }
             },
         })
+
+        const likes = await LikeService.getLikeThread(response.id, userId)
+        const replies = await ReplyService.getRepliesByThread(response.id, userId)
+        return{
+            id: response.id,
+            content: response.content,
+            image: response.image,
+            author: response.author,
+            likes: response.likes.length,
+            isliked: likes,
+            replies,
+            createdAt: response.createdAt
+        }
     }
     async createThread(data) {
         const isValid = validate(createThreadSchema, data)
