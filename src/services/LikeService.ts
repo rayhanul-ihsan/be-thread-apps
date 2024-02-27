@@ -1,4 +1,4 @@
-import { Repository } from "typeorm"
+import { Equal, Repository } from "typeorm"
 import { Like } from "../entity/Like"
 import { AppDataSource } from "../data-source"
 
@@ -14,7 +14,7 @@ export default new class LikeService {
             return true
         } else {
             return false
-        }
+        } 
     }
 
     async getLikeThread(threadId, authorId) {
@@ -30,24 +30,50 @@ export default new class LikeService {
         }
     }
 
-    async likeThread(threadId, loginsessionId) {
+    async likeThread(data) {
+        // const existLike = await this.LikeRepository.findOne({
+        //     where: {
+        //         thread: data.thread,
+        //         author: data.author
+        //     }
+        // })
+        // if (existLike) {
+        //     const unlikeResponse = await this.LikeRepository
+        //         .createQueryBuilder()
+        //         .delete()
+        //         .from(Like)
+        //         .where("thread = :thread", { thread: data.thread })
+        //         .andWhere("author = :author", { author: data.author })
+        //         .execute()
+        // } else if (!existLike) {
+        //     const unlikeResponse = await this.LikeRepository
+        //         .createQueryBuilder()
+        //         .delete()
+        //         .from(Like)
+        //         .where("thread = :thread", { thread: data.thread })
+        //         .andWhere("author = :author", { author: data.author })
+        //         .execute()
+            
+        // } 
+        // console.log(existLike)
         const response = await this.LikeRepository.save({
-            thread: threadId,
-            author: loginsessionId
+            thread: data.thread,
+            author: data.author
         })
         return {
             message: "Thread liked",
-            // id: response.id
+            id: response.id
         }
+        // console.log(threadId, loginsessionId)
     }
     
-    async likeReply(replyId, loginsessionId) {
+    async likeReply(data) {
         this.LikeRepository.save({
-            reply: replyId,
-            author: loginsessionId
+            reply: data.reply,
+            author: data.author
         })
         return {
-            message: "reply liked"
+            message: "reply liked",
         }
     }
 
@@ -66,16 +92,10 @@ export default new class LikeService {
         }
     }
 
-    async unlikeThread(id, loginsession) {
-        const getLike = await this.LikeRepository
-            .createQueryBuilder("like")
-            .leftJoinAndSelect("like.author", "author")
-            .leftJoinAndSelect("like.thread", "thread")
-            .where("like.thread = :thread", { thread: id })
-            .andWhere("like.author = :author", { author: loginsession })
-            .getOne()
+    async unlikeThread(data) {
 
-        await this.LikeRepository.delete(getLike.id)
+        const res =await this.LikeRepository.delete({thread : Equal(data.thread), author : Equal(data.author)})
+        console.log(res)
         return{
             message: "Thread unliked"
         }

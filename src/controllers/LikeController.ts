@@ -1,20 +1,30 @@
 import { Request, Response } from "express"
 import LikeService from "../services/LikeService"
+import { date } from "joi"
 
 
 export default new class LikeController { 
     async likeThread(req: Request, res: Response){
         try {
-            const response = await LikeService.likeThread(req.body.thread, res.locals.loginSession.id)
+            const data = {
+                thread: req.body.thread,
+                author: res.locals.loginSession.obj.id
+            }
+            console.log(data)
+            const response = await LikeService.likeThread(data)
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({message: 'error like thread'})
         }        
     }
-
+ 
     async likeReply(req: Request, res: Response){
         try {
-            const response = await LikeService.likeReply(req.body.reply, res.locals.loginSession.id)
+            const data = {
+                reply: req.body.reply,
+                author: res.locals.loginSession.obj.id
+            }
+            const response = await LikeService.likeReply(data)
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({message: 'error like reply'})
@@ -23,7 +33,11 @@ export default new class LikeController {
 
     async unlikeThread(req: Request, res: Response){
         try {
-            const response = await LikeService.unlikeThread(req.query.thread, res.locals.loginSession.id)
+            const data = {
+                thread: req.body.thread,
+                author: res.locals.loginSession.obj.id
+            }
+            const response = await LikeService.unlikeThread(data)
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({message: 'error unlike thread'})

@@ -1,4 +1,4 @@
-import { Repository } from "typeorm"
+import { Check, Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { Reply } from "../entity/Reply"
 import LikeService from "./LikeService"
@@ -39,7 +39,7 @@ import CostumeError from "../error/CostumeError"
         }
         return await Promise.all(replies)
     }
-
+ 
     async replyToThread(data) {
         const isValid = validate(ReplyThreadSchema, data)
         let valid
@@ -80,13 +80,13 @@ import CostumeError from "../error/CostumeError"
     }
 
     async deleteReply(id, loginsession) {
-        const check = await this.ReplyRepository.findOne({ where: { id }, relations: ["author"] })
-        
+        const check = await this.ReplyRepository.findOne({ where: { id }, relations: {author: true} })
+        console.log(loginsession, check.author.id)
         if (!check) throw new CostumeError(404, "Not Found!")
-        if (loginsession !== check.author.id) throw new CostumeError(403, "Cannot delete another users Reply")
+        if (loginsession.id != check.author.id) throw new CostumeError(403, "Cannot delete another users Reply")
         
         cloudinary.delete(check.image)
-        await this.ReplyRepository.delete(id)
+        await this.ReplyRepository.delete(check.id)
         return {
             message: "Reply deleted"
         }

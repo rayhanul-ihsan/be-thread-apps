@@ -1,6 +1,10 @@
 import {v2 as cloudinary} from 'cloudinary';
 import { extractPublicId, setConfig } from "cloudinary-build-url";
 
+
+setConfig({
+    cloudName: 'dozzwkuts',
+});
 export default new class CloudinaryConfig{
     upload(){      
         cloudinary.config({ 
@@ -21,6 +25,5 @@ export default new class CloudinaryConfig{
         async delete(image: string){
             const publicId = extractPublicId(image)
             cloudinary.api.delete_resources([publicId])
-
         }
 }

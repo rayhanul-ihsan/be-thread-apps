@@ -55,7 +55,7 @@ export default new class AuthService {
             return {
                 message:'Login SUCCSESS',
                 token,
-                data: obj
+                user: obj
         }
         } catch (error) {
             throw error
