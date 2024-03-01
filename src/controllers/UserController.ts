@@ -16,4 +16,28 @@ export default new class UserControllers {
         UserServices.delete(req, res)
     }
 
+    async uploadPicture(req: Request, res: Response) {
+        try {
+            console.log("response", req.file)
+            const response = await UserServices.uploadPicture(
+                parseInt(req.params.id, 10),
+                res.locals.loginSession.obj.id,
+                req.file.filename
+                );
+            res.status(200).json(response);
+        } catch (error) {
+            res.status(error.status).json({ message: error.message });
+        }
+    }
+
+    async getCurrent(req: Request, res: Response) {
+        try {
+            const response = await UserServices.getCurrent(res.locals.loginSession.id);
+
+            res.status(200).json(response);
+        } catch (error) {
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    }  
+
 }

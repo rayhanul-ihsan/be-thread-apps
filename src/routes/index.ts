@@ -1,42 +1,42 @@
 import * as express from 'express'
-import AuthControlers from '../controllers/AuthControlers';
+import uploadImage from '../middlewares/multer'
 import AuthMiddlewares from '../middlewares/Auth'
-import Auth from '../middlewares/Auth';
-import threadController from '../controllers/threadController';
-import uploadImage from '../middlewares/multer';
+import AuthControlers from '../controllers/AuthControlers';
 import UserController from '../controllers/UserController';
-import ReplyService from '../services/ReplyService';
-import ReplyController from '../controllers/ReplyController';
-import { Like } from 'typeorm';
 import LikeController from '../controllers/LikeController';
+import ReplyController from '../controllers/ReplyController';
+import threadController from '../controllers/threadController';
 import FollowController from '../controllers/FollowController';
 
 const router = express.Router();
 // Auth
-router.post("/auth/register", AuthControlers.register)
 router.post("/auth/login", AuthControlers.login)
+router.post("/auth/register", AuthControlers.register)
 router.get("/auth/check",AuthMiddlewares.Auth, AuthControlers.check)
 
 // Threads
 router.get("/thread", threadController.getThreads)
 router.post("/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.createThread)
-router.put("/thread/:id",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.updateThread)
+router.patch("/thread/:id",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.updateThread)
 router.delete("/thread/:id",AuthMiddlewares.Auth, threadController.deleteThread)
 
 // Users
 router.get("/users", UserController.all)
 router.post("/user/:id", UserController.findOne)
-router.put("/user/:id", UserController.update)
+router.get("/user/me/current", AuthMiddlewares.Auth, UserController.getCurrent)
+router.patch("/user/:id", AuthMiddlewares.Auth, uploadImage.upload('profile_picture'), UserController.update)
+router.patch("/upload/picture/:id", AuthMiddlewares.Auth, uploadImage.upload("profile_picture"), UserController.uploadPicture)
+router.delete("/user/:id", UserController.delete)
 
 //Replies
 router.post("/reply/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), ReplyController.ReplyThread)
 router.delete("/reply/:id",AuthMiddlewares.Auth, ReplyController.DeleteReply)
 
 // Like
-router.post("/like/thread", AuthMiddlewares.Auth, LikeController.likeThread)
-router.delete("/unlike/thread", AuthMiddlewares.Auth, LikeController.unlikeThread)
 router.post("/like/reply", AuthMiddlewares.Auth, LikeController.likeReply)
+router.post("/like/thread", AuthMiddlewares.Auth, LikeController.likeThread)
 router.delete("/unlike/reply", AuthMiddlewares.Auth, LikeController.unlikeReply)
+router.delete("/unlike/thread", AuthMiddlewares.Auth, LikeController.unlikeThread)
 
 // follows
 router.post("/follow", AuthMiddlewares.Auth, FollowController.follow)

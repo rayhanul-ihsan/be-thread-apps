@@ -7,8 +7,8 @@ AppDataSource.initialize().then(async () => {
     const app = express();
     const port = 5000;
 
-    app.use (cors())
     app.use(express.json());
+    app.use(cors())
     app.use("/api/v1",router);
 
     // app.get("/", (req: express.Request, res: express.Response) =>{

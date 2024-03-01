@@ -26,20 +26,22 @@ export default new (class threadController{
 
     async createThread(req: Request, res: Response) {
         try {
-            let data;
-            console.log(req.body);
+            let data
+            const loginSession = res.locals.loginSession 
+            console.log("login",loginSession)
+            console.log("body", req.body);
             
                if (!req.file) {
                 data = {
                     content: req.body.content,
-                    author: res.locals.loginSession.id,
+                    author: loginSession.obj.id,
 
                 };
             } else {
                 data = {
                     content: req.body.content,
-                    image: req.files,
-                    author: res.locals.loginSession.id,
+                    image: req.file.filename,
+                    author: loginSession.obj.id,
                 };
             }
             console.log(data, 'data');

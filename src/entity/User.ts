@@ -2,6 +2,7 @@
 import { Like } from "./Like"
 import { Reply } from "./Reply"
 import { Follows } from "./Follows"
+import { Thread } from "./Threads"
 
 
 @Entity({name :'users'})
@@ -33,6 +34,9 @@ export class User {
 
     @OneToMany(() => Follows, (follows) => follows.followers)
     followers: Follows[]
+
+    @OneToMany(() => Thread, (thread) => thread.author)
+    threads: Thread[]
     
     @OneToMany(() => Follows, (follows) => follows.followings)
     followings: Follows[]

@@ -85,11 +85,12 @@ export default new (class ThreadService{
         const isValid = validate(createThreadSchema, data)
         let valid
         
-        console.log(data)
+        console.log('data',data)
         if (data.image && data.content) {
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
 
+            console.log(uploadFile.secure_url)
             valid = {
                 content: isValid.content,
                 image: uploadFile.secure_url,
@@ -103,6 +104,7 @@ export default new (class ThreadService{
         } else if ( data.image && !data.content) {
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
+            console.log(uploadFile.secure_url)
             valid = {
                 image: uploadFile.secure_url,
                 author: isValid.author
@@ -132,7 +134,7 @@ export default new (class ThreadService{
             return res.status(404).json({
                 message: `Thread ID not found`
             })
-
+ 
             //mendapatkan data dari inputannya
             const data ={
                 content: req.body.content, 
