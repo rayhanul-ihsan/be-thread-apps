@@ -67,8 +67,12 @@ export default new class AuthService {
             const loginSession = res.locals.loginSession
             const user = await this.AuthRepository.findOne({
                 where:
-                {id:loginSession.obj.id}
+                {
+                    id: loginSession.obj.id
+                }
             })
+
+            return res.status(200).json(user)
         } catch (error) {
             return res.status(500).json(error)
         }

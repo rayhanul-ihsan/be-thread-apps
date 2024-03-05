@@ -12,17 +12,18 @@ const router = express.Router();
 // Auth
 router.post("/auth/login", AuthControlers.login)
 router.post("/auth/register", AuthControlers.register)
-router.get("/auth/check",AuthMiddlewares.Auth, AuthControlers.check)
-
-// Threads
+router.get("/auth/check", AuthMiddlewares.Auth, AuthControlers.check)
+ 
+// Threads 
 router.get("/thread", threadController.getThreads)
+router.get("/thread/:id", threadController.getThread)
 router.post("/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.createThread)
 router.patch("/thread/:id",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.updateThread)
 router.delete("/thread/:id",AuthMiddlewares.Auth, threadController.deleteThread)
 
 // Users
 router.get("/users", UserController.all)
-router.post("/user/:id", UserController.findOne)
+router.get("/user/:id", UserController.findOne)
 router.get("/user/me/current", AuthMiddlewares.Auth, UserController.getCurrent)
 router.patch("/user/:id", AuthMiddlewares.Auth, uploadImage.upload('profile_picture'), UserController.update)
 router.patch("/upload/picture/:id", AuthMiddlewares.Auth, uploadImage.upload("profile_picture"), UserController.uploadPicture)

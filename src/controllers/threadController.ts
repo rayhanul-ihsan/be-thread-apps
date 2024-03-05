@@ -15,7 +15,8 @@ export default new (class threadController{
 
     async getThread(req: Request, res: Response){
         try {
-            const response = await ThreadService.getThread(req.params, req.query.id)
+            console.log(req.params.id, req.query.id)
+            const response = await ThreadService.getThread(req.params.id, req.query.id)
 
             res.status(200).json(response)
         } catch (error) {
@@ -26,10 +27,10 @@ export default new (class threadController{
 
     async createThread(req: Request, res: Response) {
         try {
-            let data
+            let data 
             const loginSession = res.locals.loginSession 
-            console.log("login",loginSession)
-            console.log("body", req.body);
+            // console.log("login",loginSession)
+            // console.log("body", req.body);
             
                if (!req.file) {
                 data = {
@@ -44,10 +45,9 @@ export default new (class threadController{
                     author: loginSession.obj.id,
                 };
             }
-            console.log(data, 'data');
+            // console.log(data, 'data');
             
             const response = await ThreadService.createThread(data);
-
             res.status(201).json(response);
         } catch (error) {
             res.status(error.status).json(error.message);

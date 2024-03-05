@@ -9,11 +9,7 @@ AppDataSource.initialize().then(async () => {
 
     app.use(express.json());
     app.use(cors())
-    app.use("/api/v1",router);
-
-    // app.get("/", (req: express.Request, res: express.Response) =>{
-
-    // });
+    app.use("/api/v1", router);
 
     app.listen(port,()=>{
         console.log(`Server is running on http://localhost:${port}`);

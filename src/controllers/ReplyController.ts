@@ -4,8 +4,8 @@ import { log } from "console"
 
 export default new class ReplyController {
     async ReplyThread(req: Request, res: Response) {
-        try {
-            console.log(res.locals.loginSession)
+        try { 
+            // console.log(res.locals.loginSession)
             let data
             if (!req.file) {
                 data = { 

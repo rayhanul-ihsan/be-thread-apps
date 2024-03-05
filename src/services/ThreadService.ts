@@ -8,7 +8,7 @@ import { Request, Response, response } from "express"
 import CostumeError from "../error/CostumeError"
 import LikeService from "./LikeService"
 import ReplyService from "./ReplyService"
-
+ 
 export default new (class ThreadService{
     private readonly threadRepository: Repository<Thread> = AppDataSource.getRepository(Thread)
 
@@ -31,6 +31,7 @@ export default new (class ThreadService{
                 },
             },
         })
+        console.log(response)
         const likes = response.map(async (value) => await LikeService.getLikeThread(value.id, id))
 
         const threads = []
@@ -44,6 +45,7 @@ export default new (class ThreadService{
                 likes: response[i].likes.length,
                 isliked: await likes[i],
                 replies: response[i].replies.length,
+                reply: response[i].replies,
                 author: response[i].author,
                 createdAt: response[i].createdAt
             })
@@ -51,8 +53,8 @@ export default new (class ThreadService{
         return await Promise.all(threads)
     }
     async getThread(id, userId) {
-       const response = await this.threadRepository.findOne({
-            where: id,
+        const response = await this.threadRepository.findOne({
+            where: {id},
             relations:{
                 author: true,
                 likes: true,
@@ -67,7 +69,8 @@ export default new (class ThreadService{
                 }
             },
         })
-
+        
+        console.log(response)
         const likes = await LikeService.getLikeThread(response.id, userId)
         const replies = await ReplyService.getRepliesByThread(response.id, userId)
         return{
@@ -90,7 +93,7 @@ export default new (class ThreadService{
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
 
-            console.log(uploadFile.secure_url)
+            // console.log(uploadFile.secure_url)
             valid = {
                 content: isValid.content,
                 image: uploadFile.secure_url,
@@ -104,7 +107,7 @@ export default new (class ThreadService{
         } else if ( data.image && !data.content) {
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
-            console.log(uploadFile.secure_url)
+            // console.log(uploadFile.secure_url)
             valid = {
                 image: uploadFile.secure_url,
                 author: isValid.author
@@ -112,7 +115,7 @@ export default new (class ThreadService{
         } else {
             throw new CostumeError(400, "content or image is required")
         }
-        console.log('va',valid);
+        // console.log('va',valid);
         
         await this.threadRepository.save(valid)
         return{

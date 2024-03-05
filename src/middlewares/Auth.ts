@@ -2,21 +2,19 @@ import { NextFunction, Request, Response } from "express"
 import * as jwt from 'jsonwebtoken'
 
 export default new class AuthMiddlewares {
-    Auth(req: Request, res: Response, next: NextFunction) :Response{
+    Auth(req: Request, res: Response, next: NextFunction) {
         const authHeader = req.headers.authorization
-        // console.log(authHeader);
-        
 
         if (!authHeader || !authHeader.startsWith('Bearer')) {
             return res.status(401).json({message: "Login dulu Tolol!!"});
         }
 
         const token = authHeader.split(" ")[1];
-        // console.log(token);
         
         try{
-            const loginSession =jwt.verify(token, "apaajah");
-            res.locals.loginSession =loginSession
+            const loginSession = jwt.verify(token, "apaajah");
+            res.locals.loginSession = loginSession
+            
             next()
         } catch(error){
             return res.status(401).json({message: "token not valid"});

@@ -1,6 +1,6 @@
 import { Check, Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
-import { Reply } from "../entity/Reply"
+import { Reply } from "../entity/Reply" 
 import LikeService from "./LikeService"
 import { validate } from "../utils/validator/validation"
 import { ReplyThreadSchema } from "../utils/validator/ReplyValidator"
