@@ -21,7 +21,7 @@ export default new class UserControllers {
             console.log("response", req.file)
             const response = await UserServices.uploadPicture(
                 parseInt(req.params.id, 10),
-                res.locals.loginSession.obj.id,
+                res.locals.loginSession.id,
                 req.file.filename
                 );
             res.status(200).json(response);

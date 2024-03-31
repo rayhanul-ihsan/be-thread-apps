@@ -35,14 +35,14 @@ export default new (class threadController{
                if (!req.file) {
                 data = {
                     content: req.body.content,
-                    author: loginSession.obj.id,
+                    author: loginSession.id,
 
                 };
             } else {
                 data = {
                     content: req.body.content,
                     image: req.file.filename,
-                    author: loginSession.obj.id,
+                    author: loginSession.id,
                 };
             }
             // console.log(data, 'data');

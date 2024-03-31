@@ -6,7 +6,7 @@ import UserController from '../controllers/UserController';
 import LikeController from '../controllers/LikeController';
 import ReplyController from '../controllers/ReplyController';
 import threadController from '../controllers/threadController';
-import FollowController from '../controllers/FollowController';
+import FollowController from '../controllers/FollowController'; 
 
 const router = express.Router();
 // Auth
@@ -30,18 +30,19 @@ router.patch("/upload/picture/:id", AuthMiddlewares.Auth, uploadImage.upload("pr
 router.delete("/user/:id", UserController.delete)
 
 //Replies
+router.get("/reply/:id", ReplyController.ReplyThread)
 router.post("/reply/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), ReplyController.ReplyThread)
 router.delete("/reply/:id",AuthMiddlewares.Auth, ReplyController.DeleteReply)
 
 // Like
 router.post("/like/reply", AuthMiddlewares.Auth, LikeController.likeReply)
 router.post("/like/thread", AuthMiddlewares.Auth, LikeController.likeThread)
-router.delete("/unlike/reply", AuthMiddlewares.Auth, LikeController.unlikeReply)
-router.delete("/unlike/thread", AuthMiddlewares.Auth, LikeController.unlikeThread)
+// router.delete("/unlike/reply", AuthMiddlewares.Auth, LikeController.unlikeReply)
+// router.delete("/unlike/thread", AuthMiddlewares.Auth, LikeController.unlikeThread)
 
 // follows
 router.post("/follow", AuthMiddlewares.Auth, FollowController.follow)
-router.get("/follow/:id", FollowController.getFollow)
+router.get("/follow", AuthMiddlewares.Auth ,FollowController.getFollows)
 router.delete("/unfollow", AuthMiddlewares.Auth, FollowController.unFollow)
 
 

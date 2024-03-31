@@ -7,38 +7,45 @@ import { updateUserSchema } from "../utils/validator/UserValidator"
 import { Follows } from "../entity/Follows"
 import CostumeError from "../error/CostumeError"
 import cloudinary from "../libs/cloudinary"
+import { redisClient } from "../libs/redis"
 
 export default new class UserService {
     private readonly UserRepository: Repository<User> = AppDataSource.getRepository(User)
     
     async find(req: Request, res: Response): Promise<Response>{
         try {
-            const user = await this.UserRepository.find({
-                where:{
-                  user_name: req.body.user_name as string  
-                },
-                relations: {
-                    threads: true,
-                    likes: true,
-                    replies: true,
-                    followers: true,
-                    followings: true
-                },
-                select:[
-                    "id",
-                    "full_name",
-                    "user_name",
-                    "email",
-                    "bio",
-                    "image_cover",
-                    "profile_picture",
-                    "threads"
-                ]
-            })
-            // console.log("user", user)
+            let data
+            // data = await redisClient.get("users")
+
+            if(!data){
+                const dataUser = await this.UserRepository.find({
+                    relations: {
+                        threads: true,
+                        likes: true,
+                        replies: true,
+                        followers: true,
+                        followings: true
+                    },
+                    select:[
+                        "id",
+                        "full_name",
+                        "user_name",
+                        "email",
+                        "bio",
+                        "image_cover",
+                        "profile_picture",
+                        "threads"
+                    ]
+
+                })
+                const stringDataUser = JSON.stringify(dataUser)
+                redisClient.set("users", stringDataUser)
+                data = stringDataUser
+                // console.log("user", user)
+            }
             return res.status(200).json({
                 message: "Success Getting All Users",
-                data: user
+                data: JSON.parse(data)
             })
         } catch (error) {
             res.status(500).json({message: error.message})

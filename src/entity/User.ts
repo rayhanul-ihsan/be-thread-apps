@@ -32,11 +32,11 @@ export class User {
     @Column({nullable: true})
     bio: string
 
-    @OneToMany(() => Follows, (follows) => follows.followers)
-    followers: Follows[]
-
     @OneToMany(() => Thread, (thread) => thread.author)
     threads: Thread[]
+    
+    @OneToMany(() => Follows, (follows) => follows.followers)
+    followers: Follows[]
     
     @OneToMany(() => Follows, (follows) => follows.followings)
     followings: Follows[]

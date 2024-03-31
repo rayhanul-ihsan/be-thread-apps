@@ -6,15 +6,15 @@ export class Follows {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() =>User, (user) => user.followings, {
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-    })
-    followings: User
-
     @ManyToOne(() =>User, (user) => user.followers, {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
     })
     followers: User
+
+    @ManyToOne(() =>User, (user) => user.followings, {
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+    })
+    followings: User
 }

@@ -31,7 +31,6 @@ export default new (class ThreadService{
                 },
             },
         })
-        console.log(response)
         const likes = response.map(async (value) => await LikeService.getLikeThread(value.id, id))
 
         const threads = []
@@ -70,7 +69,6 @@ export default new (class ThreadService{
             },
         })
         
-        console.log(response)
         const likes = await LikeService.getLikeThread(response.id, userId)
         const replies = await ReplyService.getRepliesByThread(response.id, userId)
         return{
@@ -88,12 +86,10 @@ export default new (class ThreadService{
         const isValid = validate(createThreadSchema, data)
         let valid
         
-        console.log('data',data)
         if (data.image && data.content) {
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
 
-            // console.log(uploadFile.secure_url)
             valid = {
                 content: isValid.content,
                 image: uploadFile.secure_url,
@@ -107,7 +103,6 @@ export default new (class ThreadService{
         } else if ( data.image && !data.content) {
             cloudinary.upload()
             const uploadFile = await cloudinary.destination(isValid.image)
-            // console.log(uploadFile.secure_url)
             valid = {
                 image: uploadFile.secure_url,
                 author: isValid.author
@@ -115,7 +110,6 @@ export default new (class ThreadService{
         } else {
             throw new CostumeError(400, "content or image is required")
         }
-        // console.log('va',valid);
         
         await this.threadRepository.save(valid)
         return{
@@ -167,58 +161,6 @@ export default new (class ThreadService{
             return res.status(500).json(error)
         }
     }
-
-
-    //fahmi punya
-    // async updateThread(id, data, session) {
-    //     console.log("data service",data)
-    //     const checkThread = await this.threadRepository.findOne({ 
-    //         where: id,
-    //         relations:{
-    //             author: true
-    //         }
-    //     })
-    //     console.log("ini check thread",checkThread)
-    //     if(checkThread.author.id !== session.id) {
-    //         throw new CostumeError(403, "forbidden")
-    //     }
-    //     const isValid = validate(updateThreadSchema, data)
-    //     console.log("ini isvalid",isValid)
-    //     let valid
-        
-    //     if (data.image && data.content) {
-    //         cloudinary.upload()
-    //         const uploadFile = await cloudinary.destination(isValid.image)
-    
-    //         valid = {
-    //             content: isValid.content,
-    //             image: uploadFile.secure_url,
-    //             updatedAt: isValid.updatedAt
-    //         }
-    //     } else if (!data.image && data.content) {
-    //         valid = {
-    //             content: isValid.content,
-    //             updatedAt: isValid.updatedAt
-    //         }
-    //     } else if ( data.image && !data.content) {
-    //         cloudinary.upload()
-    //         const uploadFile = await cloudinary.destination(isValid.image)
-    //         valid = {
-    //             image: uploadFile.secure_url,
-    //             updatedAt: isValid.updatedAt
-    //         }
-    //     } else {
-    //         throw new CostumeError(400, "content or image is required")
-    //     }
-
-    //     await this.threadRepository.update(id, valid)
-    //     return {
-    //         message: "Thread update",
-    //         data: valid
-    //     }
-    // }
-
-
     async delete(req: Request, res: Response): Promise<Response>{
         try {
             // mengambil id dari req params lalu diubah tipe datanya jadi integer

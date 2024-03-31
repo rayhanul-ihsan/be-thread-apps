@@ -1,8 +1,17 @@
 import { Request, Response } from "express"
 import ReplyService from "../services/ReplyService"
-import { log } from "console"
 
 export default new class ReplyController {
+    
+    async getReplies(req: Request, res: Response) {
+        try {
+            const response = await ReplyService.getRepliesByThread(req.params.id, res.locals.loginSession.id)
+            res.status(200).json(response)
+        } catch (error) {
+            res.status(error.status).json({ message: error.message })
+        }
+    }
+
     async ReplyThread(req: Request, res: Response) {
         try { 
             // console.log(res.locals.loginSession)
@@ -10,14 +19,14 @@ export default new class ReplyController {
             if (!req.file) {
                 data = { 
                     content: req.body.content,
-                    author: res.locals.loginSession.obj.id,
+                    author: res.locals.loginSession.id,
                     thread: req.body.thread
                 }
             } else {
-                data = {
+                data = { 
                     content: req.body.content,
                     image: req.file.filename,
-                    author: res.locals.loginSession.obj.id,
+                    author: res.locals.loginSession.id,
                     thread: req.body.thread
                 }
             }
@@ -28,10 +37,10 @@ export default new class ReplyController {
             res.status(error.status).json(error.message)
         }
     }
-
+ 
     async DeleteReply(req: Request, res: Response) {
         try {
-            const response = await ReplyService.deleteReply(req.params.id, res.locals.loginSession.obj)
+            const response = await ReplyService.deleteReply(req.params.id, res.locals.loginSession)
             res.status(200).json(response)
         } catch (error) {
             res.status(error.status).json({ message: error.message })
