@@ -11,39 +11,9 @@ import { Request, Response } from "express";
 export default new (class ReplyService {
   private readonly ReplyRepository: Repository<Reply> =
     AppDataSource.getRepository(Reply);
-
-  // async getRepliesByThread(threadId, userId) {
-  //     const response = await this.ReplyRepository
-  //         .createQueryBuilder("reply")
-  //         .leftJoinAndSelect("reply.thread", "thread")
-  //         .leftJoinAndSelect("reply.author", "author")
-  //         .leftJoinAndSelect("reply.replay", "replay")
-  //         .leftJoinAndSelect("reply.likes", "likes")
-  //         .where("reply.thread = :thread", { thread: threadId })
-  //         .getMany()
-  //     const likes = response.map(async (value) => await LikeService.getLikeReply(value.id, userId))
-
-  //     const replies = []
-  //     let i = 0
-  //     const len = response.length
-  //     for (i = 0; i < len; i++) {
-  //         replies.push({
-  //             id: response[i].id,
-  //             content: response[i].content,
-  //             image: response[i].image,
-  //             author: response[i].author,
-  //             likes: response[i].likes.length,
-  //             islike: await likes[i],
-  //             replies: response[i].replies,
-  //             created_at: response[i].created_at,
-
-  //         })
-  //     }
-  //     return await Promise.all(replies)
-  // }
+    
   async getRepliesByThread(threadId, userId) {
     try {
-      // Mengambil semua respons dari ReplyRepository dengan query builder
       const responses = await this.ReplyRepository.createQueryBuilder("reply")
         .leftJoinAndSelect("reply.thread", "thread")
         .leftJoinAndSelect("reply.author", "author")
@@ -70,7 +40,6 @@ export default new (class ReplyService {
         created_at: response.created_at,
       }));
     } catch (error) {
-      // Menangani kesalahan jika terjadi
       console.error("Error in getRepliesByThread:", error);
       throw error;
     }

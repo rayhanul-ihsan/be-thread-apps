@@ -18,7 +18,7 @@ export class Thread {
     @OneToMany(()=>Like, (like) => like.thread)
     likes: Like[]
 
-    @OneToMany(() => Reply, (reply) => reply.replay)
+    @OneToMany(() => Reply, (reply) => reply.thread)
     replies: Reply[]
 
     @ManyToOne(()=>User,user=>user.id)

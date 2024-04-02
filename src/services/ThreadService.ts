@@ -18,39 +18,43 @@ export default new (class ThreadService{
             order: {
                 id: "DESC"
             },
-            relations:{
-                author: true,
-                likes: true,
-                replies: true
-            },
+            relations:["author", "likes", "replies", "likes.author"],
             select:{
                 author: {
                     full_name: true,
                     user_name: true,
                     profile_picture: true
                 },
+                likes: {
+                    id: true,
+                    author: {
+                        id: true
+                    }
+                },
+                replies: {
+                    id: true
+                }
             },
         })
-        const likes = response.map(async (value) => await LikeService.getLikeThread(value.id, id))
+        // const likes = response.map(async (value) => await LikeService.getLikeThread(value.id, id))
 
-        const threads = []
-        let i = 0
-        const len = response.length
-        for (i = 0; i < len; i++) {
-            threads.push({
-                id: response[i].id,
-                content: response[i].content,
-                image: response[i].image,
-                likes: response[i].likes.length,
-                isliked: await likes[i],
-                replies: response[i].replies.length,
-                reply: response[i].replies.length,
-                author: response[i].author,
-                createdAt: response[i].createdAt
-            })
-        }
-        console.log(threads)
-        return await Promise.all(threads)
+        // const threads = []
+        // let i = 0
+        // const len = response.length
+        // for (i = 0; i < len; i++) {
+        //     threads.push({
+        //         id: response[i].id,
+        //         content: response[i].content,
+        //         image: response[i].image,
+        //         likes: response[i].likes.length,
+        //         isliked: await likes[i],
+        //         replies: response[i].replies.length,
+        //         reply: response[i].replies.length,
+        //         author: response[i].author,
+        //         createdAt: response[i].createdAt
+        //     })
+        // }
+        return response
     }
     async getThread(id, userId) {
         const response = await this.threadRepository.findOne({

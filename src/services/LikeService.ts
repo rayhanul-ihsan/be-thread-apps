@@ -33,10 +33,11 @@ export default new (class LikeService {
       try {
           const existLike = await this.LikeRepository.findOne({
               where: {
-                  thread: data.thread,
-                  author: data.author
+                  thread: Equal(data.thread),
+                  author: Equal(data.author)
               }
           });
+          console.log(existLike)
 
           if (existLike) {
              await this.LikeRepository.delete({
