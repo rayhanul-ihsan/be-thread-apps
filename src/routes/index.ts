@@ -18,7 +18,7 @@ router.get("/auth/check", AuthMiddlewares.Auth, AuthControlers.check)
 router.get("/thread", threadController.getThreads)
 router.get("/thread/:id", threadController.getThread)
 router.post("/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.createThread)
-router.patch("/thread/:id",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.updateThread)
+// router.patch("/thread/:id",AuthMiddlewares.Auth, uploadImage.upload('image'), threadController.updateThread)
 router.delete("/thread/:id",AuthMiddlewares.Auth, threadController.deleteThread)
 
 // Users
@@ -26,13 +26,15 @@ router.get("/users", UserController.all)
 router.get("/user/:id", UserController.findOne)
 router.get("/user/me/current", AuthMiddlewares.Auth, UserController.getCurrent)
 router.patch("/user/:id", AuthMiddlewares.Auth, uploadImage.upload('profile_picture'), UserController.update)
+// router.patch("/user", AuthMiddlewares.Auth, uploadImage.upload('image_cover'), UserController.update)
 router.patch("/upload/picture/:id", AuthMiddlewares.Auth, uploadImage.upload("profile_picture"), UserController.uploadPicture)
+// router.patch("/upload/cover/:id", AuthMiddlewares.Auth, uploadImage.upload("image_cover"), UserController.uploadCover)
 router.delete("/user/:id", UserController.delete)
 
 //Replies
 router.get("/reply/:id", ReplyController.ReplyThread)
 router.post("/reply/thread",AuthMiddlewares.Auth, uploadImage.upload('image'), ReplyController.ReplyThread)
-router.delete("/reply/:id",AuthMiddlewares.Auth, ReplyController.DeleteReply)
+router.delete("/reply/:id",AuthMiddlewares.Auth, ReplyController.deleteReply)
 
 // Like
 router.post("/like/reply", AuthMiddlewares.Auth, LikeController.likeReply)

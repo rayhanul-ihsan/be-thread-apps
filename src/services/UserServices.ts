@@ -106,12 +106,22 @@ export default new class UserService {
         if (session !== id) throw new CostumeError(403, "Cannot update another user's profile");
         cloudinary.upload()
         const upload = await cloudinary.destination(profile_picture)
-        profile_picture = upload.secure_url
-        await this.UserRepository.update({ id }, { profile_picture });
+        // profile_picture = upload.secure_url
+        await this.UserRepository.update({ id }, { profile_picture: upload.secure_url });
         return {
             message: "Picture uploaded",
         };
     }
+    // async uploadCover(id, session, image_cover) {
+    //     if (session !== id) throw new CostumeError(403, "Cannot update another user's profile");
+    //     cloudinary.upload()
+    //     const upload = await cloudinary.destination(image_cover)
+    //     image_cover = upload.secure_url
+    //     await this.UserRepository.update({ id }, { image_cover });
+    //     return {
+    //         message: "Picture uploaded",
+    //     };
+    // }
 
     async update(req: Request, res: Response): Promise<Response>{
         try {
@@ -131,15 +141,6 @@ export default new class UserService {
             if(data.userName) {
                 user.user_name = value.userName
             }
-            // if(data.email) {
-            //     user.email = value.email
-            // }
-            // if(data.password) {
-            //     const hashPassword = await bcrypt.hash(value.password, 10)
-            //     user.password = hashPassword
-            // }
-
-
             if(data.profile_picture) {
 
                 cloudinary.upload()
@@ -156,7 +157,6 @@ export default new class UserService {
             }
             
             const response = await this.UserRepository.save(user)
-            // const response = "bwang"
             console.log("value :",value)
             return res.status(200).json(
                 {data: response}

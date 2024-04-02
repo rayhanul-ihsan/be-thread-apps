@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import ReplyService from "../services/ReplyService"
 
 export default new class ReplyController {
-    
+     
     async getReplies(req: Request, res: Response) {
         try {
             const response = await ReplyService.getRepliesByThread(req.params.id, res.locals.loginSession.id)
@@ -14,7 +14,7 @@ export default new class ReplyController {
 
     async ReplyThread(req: Request, res: Response) {
         try { 
-            // console.log(res.locals.loginSession)
+            console.log(res.locals.loginSession)
             let data
             if (!req.file) {
                 data = { 
@@ -37,13 +37,16 @@ export default new class ReplyController {
             res.status(error.status).json(error.message)
         }
     }
- 
-    async DeleteReply(req: Request, res: Response) {
-        try {
-            const response = await ReplyService.deleteReply(req.params.id, res.locals.loginSession)
-            res.status(200).json(response)
-        } catch (error) {
-            res.status(error.status).json({ message: error.message })
-        }
+  
+    // async DeleteReply(req: Request, res: Response) {
+    //     try {
+    //         const response = await ReplyService.deleteReply(req.params.id, res.locals.loginSession)
+    //         res.status(200).json(response)
+    //     } catch (error) {
+    //         res.status(error.status).json({ message: error.message })
+    //     }
+    // }
+    async deleteReply(req: Request, res: Response) {
+        ReplyService.deleteReply(req, res)
     }
 }

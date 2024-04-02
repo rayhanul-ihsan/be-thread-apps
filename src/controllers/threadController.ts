@@ -15,7 +15,7 @@ export default new (class threadController{
 
     async getThread(req: Request, res: Response){
         try {
-            console.log(req.params.id, req.query.id)
+            // console.log(req.params.id, req.query.id)
             const response = await ThreadService.getThread(req.params.id, req.query.id)
 
             res.status(200).json(response)
@@ -29,8 +29,6 @@ export default new (class threadController{
         try {
             let data 
             const loginSession = res.locals.loginSession 
-            // console.log("login",loginSession)
-            // console.log("body", req.body);
             
                if (!req.file) {
                 data = {
@@ -45,7 +43,6 @@ export default new (class threadController{
                     author: loginSession.id,
                 };
             }
-            // console.log(data, 'data');
             
             const response = await ThreadService.createThread(data);
             res.status(201).json(response);
@@ -54,44 +51,7 @@ export default new (class threadController{
         }
     }
 
-    // async updateThread(req: Request, res: Response){
-    //     try {
-    //         let data
-    //         console.log(data)
-    //         if(!req.file) {
-    //             data = {
-    //                 content: req.body.content
-    //             }
-    //             console.log("tanpa file",data)
-    //         }else {
-    //             data = {
-    //                 content: req.body.content,
-    //                 image: req.file.filename
-    //             }                
-    //         }
-    //         console.log("dengan file",data)
-    //         const response = await ThreadService.updateThread(req.params, data, res.locals.loginSession.id)
-    //         console.log("response",response)
-    //         res.status(200).json(response)
-    //     } catch (error) {
-    //         res.status(error.status).json({message: error.message})
-            
-    //     }
-    // }
-    async updateThread(req: Request, res: Response){
-        ThreadService.update(req,res)
-    }
-
     async deleteThread(req: Request, res: Response){
         ThreadService.delete(req,res)
     }
-    // async deleteThread(req: Request, res: Response){
-    //     try {
-    //         const response = await ThreadService.deleteThread(req.params, res.locals.loginSession.id)
-    //         res.status(200).json(response)
-    //     } catch (error) {
-    //         res.status(error.status).json({message: error.message})
-            
-    //     }
-    // }
 })

@@ -24,11 +24,25 @@ export default new class UserControllers {
                 res.locals.loginSession.id,
                 req.file.filename
                 );
-            res.status(200).json(response);
+                // res.status(200).json(response);
+                console.log("response", response)
         } catch (error) {
             res.status(error.status).json({ message: error.message });
         }
     }
+    // async uploadCover(req: Request, res: Response) {
+    //     try {
+    //         console.log("response", req.file)
+    //         const response = await UserServices.uploadCover(
+    //             parseInt(req.params.id, 10),
+    //             res.locals.loginSession.id,
+    //             req.file.filename
+    //             );
+    //         res.status(200).json(response);
+    //     } catch (error) {
+    //         res.status(error.status).json({ message: error.message });
+    //     }
+    // }
 
     async getCurrent(req: Request, res: Response) {
         try {
