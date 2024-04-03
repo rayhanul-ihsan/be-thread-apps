@@ -14,17 +14,19 @@ export default new class UserControllers {
     }
     delete(req: Request,res: Response){
         UserServices.delete(req, res)
-    }
+    } 
 
     async uploadPicture(req: Request, res: Response) {
         try {
-            console.log("response", req.file)
+            console.log("response", res.locals.filename, req.params.id)
+            // const image = res.locals.filename
+            // console.log("image", image)
             const response = await UserServices.uploadPicture(
                 parseInt(req.params.id, 10),
                 res.locals.loginSession.id,
                 req.file.filename
                 );
-                // res.status(200).json(response);
+                res.status(200).json(response);
                 console.log("response", response)
         } catch (error) {
             res.status(error.status).json({ message: error.message });

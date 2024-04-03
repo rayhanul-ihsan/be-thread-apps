@@ -124,7 +124,8 @@ export default new class UserService {
     // }
 
     async update(req: Request, res: Response): Promise<Response>{
-        try {
+        console.log('update',req.file)
+        try { 
             const data = req.body
             console.log("data :",data)
             const user = await this.UserRepository.findOne({where:{id: Number(req.params.id)}})

@@ -20,27 +20,7 @@ export default new class FollowService {
             relations: {
                 followers: true
             }
-        })
-        // console.log("folower:",followers)
-        // console.log("following:",followings)
-        // const pollower = await Promise.all(
-        //     followers.map(async (value) => {
-        //         const isFollow = await this.getFollows(value.id, id );
-
-        //         return {
-        //             ...value,
-        //             isFollow,
-        //         };
-        //     })
-        // );
-        // const pollowing = followings.map((value) => {
-        //     return {
-        //         ...value,
-        //         isFollow: true,
-        //     };
-        // });
-
- 
+        }) 
         return {
             followers, 
             followings
@@ -71,14 +51,23 @@ export default new class FollowService {
                 
         return {
             message: "Followed Successfully!!" 
-        }
+        } 
     }
-    // unFollow(followings: string | import("qs").ParsedQs | string[] | import("qs").ParsedQs[], id: any) {
-    //     throw new Error("Method not implemented.")
-    // }
 
     async unfollow(followers, followings){
-        await this.FollowRepository.delete({followers, followings})
+        const getFollow = await this.FollowRepository.findOne({
+            where:{
+                followers: Equal(followers),
+                followings: Equal(followings)
+            },
+            relations:{
+                followers: true,
+                followings: true
+            }
+        })
+        console.log(getFollow.id)
+        if(!getFollow) throw new CostumeError(400, "You Dont Follow this User!")
+        await this.FollowRepository.delete(getFollow.id)
         return {
             message: "Unfollowed Successfully!!" 
         }
