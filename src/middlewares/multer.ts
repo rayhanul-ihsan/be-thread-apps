@@ -20,10 +20,6 @@ export default new class UploadImage {
                 if (error){
                     return res.status(400).json({message:'while proccessing upload image'})
                 }
-                
-                if(req.file) {
-                    res.locals.filename = req.file.filename
-                }
                 next()
             })
         }

@@ -25,10 +25,10 @@ router.delete("/thread/:id",AuthMiddlewares.Auth, threadController.deleteThread)
 router.get("/users", UserController.all)
 router.get("/user/:id", UserController.findOne)
 router.get("/user/me/current", AuthMiddlewares.Auth, UserController.getCurrent)
-router.patch("/user/:id", AuthMiddlewares.Auth, uploadImage.upload('profile_picture'), UserController.update)
+router.patch("/update/user/:id", AuthMiddlewares.Auth, UserController.update)
 // router.patch("/user", AuthMiddlewares.Auth, uploadImage.upload('image_cover'), UserController.update)
-router.patch("/upload/picture/:id", AuthMiddlewares.Auth, uploadImage.upload("profile_picture"), UserController.uploadPicture)
-// router.patch("/upload/cover/:id", AuthMiddlewares.Auth, uploadImage.upload("image_cover"), UserController.uploadCover)
+router.patch("/upload/picture/:id",AuthMiddlewares.Auth, uploadImage.upload('profile_picture'), UserController.uploadPicture)
+router.patch("/upload/cover/:id", AuthMiddlewares.Auth, uploadImage.upload("image_cover"), UserController.uploadCover)
 router.delete("/user/:id", UserController.delete)
 
 //Replies

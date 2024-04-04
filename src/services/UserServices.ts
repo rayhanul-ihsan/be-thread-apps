@@ -112,60 +112,80 @@ export default new class UserService {
             message: "Picture uploaded",
         };
     }
-    // async uploadCover(id, session, image_cover) {
-    //     if (session !== id) throw new CostumeError(403, "Cannot update another user's profile");
-    //     cloudinary.upload()
-    //     const upload = await cloudinary.destination(image_cover)
-    //     image_cover = upload.secure_url
-    //     await this.UserRepository.update({ id }, { image_cover });
-    //     return {
-    //         message: "Picture uploaded",
-    //     };
-    // }
+    async uploadCover(id, session, image_cover) {
+        if (session !== id) throw new CostumeError(403, "Cannot update another user's profile");
+        cloudinary.upload()
+        const upload = await cloudinary.destination(image_cover)
+        image_cover = upload.secure_url
+        await this.UserRepository.update({ id }, { image_cover });
+        return {
+            message: "Picture uploaded",
+        };
+    }
 
-    async update(req: Request, res: Response): Promise<Response>{
-        console.log('update',req.file)
-        try { 
-            const data = req.body
-            console.log("data :",data)
-            const user = await this.UserRepository.findOne({where:{id: Number(req.params.id)}})
-            if(!user) return res.status(404).json({message: "User Not Found"})
+    async update(id: number, loginSession: number, data) {
+        if (loginSession !== id) throw new CostumeError(403, "Cannot update another user's profile");
+        let user;
 
-            const { error, value } = updateUserSchema.validate(data)
-            if(error) return res.status(400).json(error.details[0].message)
-
-            // if(data.password && data.password !== user.password)
-            
-            if(data.fullName) {
-                user.full_name = value.fullName
-            }
-            if(data.userName) {
-                user.user_name = value.userName
-            }
-            if(data.profile_picture) {
-
-                cloudinary.upload()
-                const upload = await cloudinary.destination(value.profile_picture)
-                user.profile_picture = upload.secure_url
-            }
-            if(data.image_cover) {
-                cloudinary.upload()
-                const upload = await cloudinary.destination(value.image_cover)
-                user.image_cover = upload.secure_url
-            }
-            if(data.bio) {
-                user.bio = value.bio
-            }
-            
-            const response = await this.UserRepository.save(user)
-            console.log("value :",value)
-            return res.status(200).json(
-                {data: response}
-                )
-        } catch (error) {
-            return res.status(500).json({message: error.message})
+        if (!data.password) {
+            user = { 
+                full_name: data.full_name,
+                user_name: data.user_name,
+                bio: data.bio,
+            };
+        } else {
+            const hash = await bcrypt.hash(data.password, 10);
+            user = {
+                full_name: data.full_name,
+                user_name: data.user_name,
+                bio: data.bio,
+                password: hash,
+            };
         }
-    } 
+
+        await this.UserRepository.update({ id }, user);
+        return {
+            message: "Account updated",
+            user: data.user_name,
+        };
+    }
+
+    // async update(req: Request, res: Response): Promise<Response> {
+    //     try {
+    //         const { id } = req.params;
+    //         const { full_name, user_name, bio } = req.body;
+    
+    //         console.log("data :", req.body);
+    
+    //         const user = await this.UserRepository.findOne({ where: { id: Number(id) } });
+    //         if (!user) {
+    //             return res.status(404).json({ message: "User Not Found" });
+    //         }
+    
+    //         const { error } = updateUserSchema.validate(req.body);
+    //         if (error) {
+    //             return res.status(400).json(error.details[0].message);
+    //         }
+    
+    //         // Update user properties
+    //         if (full_name) {
+    //             user.full_name = full_name;
+    //         }
+    //         if (user_name) {
+    //             user.user_name = user_name;
+    //         }
+    //         if (bio !== undefined) {
+    //             user.bio = bio;
+    //         }
+    
+    //         const updatedUser = await this.UserRepository.save(user);
+    //         console.log("updatedUser :", updatedUser);
+    
+    //         return res.status(200).json({ data: updatedUser });
+    //     } catch (error) {
+    //         return res.status(500).json({ message: error.message });
+    //     }
+    // }
     async delete(req: Request, res: Response): Promise<Response>{
         try {
             const user = await this.UserRepository.delete({id: Number(req.params.id)})
